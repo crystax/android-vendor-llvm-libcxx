@@ -193,7 +193,7 @@ template <class charT> class messages_byname;
 #include <ctime>
 #if defined(_LIBCPP_MSVCRT) || defined(__MINGW32__)
 #include <support/win32/locale_win32.h>
-#elif !defined(__ANDROID__)
+#elif !defined(__ANDROID__) || defined(__CRYSTAX__)
 #include <nl_types.h>
 #endif
 
@@ -3673,7 +3673,7 @@ template <class _CharT>
 typename messages<_CharT>::catalog
 messages<_CharT>::do_open(const basic_string<char>& __nm, const locale&) const
 {
-#if defined(_WIN32) || defined(__ANDROID__)
+#if defined(_WIN32) || (defined(__ANDROID__) && !defined(__CRYSTAX__))
     return -1;
 #else // _WIN32 || __ANDROID__
     catalog __cat = (catalog)catopen(__nm.c_str(), NL_CAT_LOCALE);
@@ -3688,7 +3688,7 @@ typename messages<_CharT>::string_type
 messages<_CharT>::do_get(catalog __c, int __set, int __msgid,
                          const string_type& __dflt) const
 {
-#if defined(_WIN32) || defined(__ANDROID__)
+#if defined(_WIN32) || (defined(__ANDROID__) && !defined(__CRYSTAX__))
     return __dflt;
 #else // _WIN32
     string __ndflt;
@@ -3710,7 +3710,7 @@ template <class _CharT>
 void
 messages<_CharT>::do_close(catalog __c) const
 {
-#if !defined(_WIN32) && !defined(__ANDROID__)
+#if !defined(_WIN32) && (!defined(__ANDROID__) || defined(__CRYSTAX__))
     if (__c != -1)
         __c <<= 1;
     nl_catd __cat = (nl_catd)__c;
