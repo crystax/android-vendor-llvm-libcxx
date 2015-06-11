@@ -263,6 +263,8 @@ strstreambuf::seekoff(off_type __off, ios_base::seekdir __way, ios_base::openmod
         case ios::end:
             newoff = seekhigh - eback();
             break;
+        default:
+            return pos_type(off_type(-1));
         }
         newoff += __off;
         if (0 <= newoff && newoff <= seekhigh - eback())
