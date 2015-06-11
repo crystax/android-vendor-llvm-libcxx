@@ -29,8 +29,12 @@
 # if __ANDROID_API__ <= 20 && !defined(__CRYSTAX__)
 #  include <support/android/locale_bionic.h>
 # endif
+#elif defined(__sun__)
+# include <support/solaris/xlocale.h>
+#elif defined(_NEWLIB_VERSION)
+# include <support/newlib/xlocale.h>
 #elif (defined(__GLIBC__) || defined(__APPLE__)      || defined(__FreeBSD__) \
-    || defined(__sun__)   || defined(__EMSCRIPTEN__) || defined(__IBMCPP__))
+    || defined(__EMSCRIPTEN__) || defined(__IBMCPP__))
 # include <xlocale.h>
 #endif // __GLIBC__ || __APPLE__ || __FreeBSD__ || __sun__ || __EMSCRIPTEN__ || __IBMCPP__
 
@@ -356,7 +360,7 @@ public:
 #elif defined(__EMSCRIPTEN__) ||  defined(__NetBSD__)
     typedef unsigned short mask;
 #elif defined(__ANDROID__)
-    typedef char mask;
+    typedef unsigned char mask;
 #endif
     static const mask space  = _CTYPE_S;
     static const mask print  = _CTYPE_R;
@@ -366,7 +370,12 @@ public:
     static const mask alpha  = _CTYPE_A;
     static const mask digit  = _CTYPE_D;
     static const mask punct  = _CTYPE_P;
+# if defined(__ANDROID__)
+    static const mask xdigit = _CTYPE_X | _CTYPE_D;
+# else
     static const mask xdigit = _CTYPE_X;
+# endif
+
 # if defined(__NetBSD__)
     static const mask blank  = _CTYPE_BL;
 # else
@@ -1411,7 +1420,7 @@ protected:
 
 // template <class charT> class numpunct_byname
 
-template <class charT> class _LIBCPP_TYPE_VIS_ONLY numpunct_byname;
+template <class _CharT> class _LIBCPP_TYPE_VIS_ONLY numpunct_byname;
 
 template <>
 class _LIBCPP_TYPE_VIS numpunct_byname<char>
